@@ -99,9 +99,9 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
 
 
-    testImplementation(libs.mockito.core.v2245)
-
     testImplementation(libs.kotlinx.coroutines.test.v152)
+
+    testImplementation(libs.androidx.core.testing)
 
 
     androidTestImplementation(libs.androidx.test.ext.junit)

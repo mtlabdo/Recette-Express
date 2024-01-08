@@ -1,6 +1,5 @@
 package com.example.androidtest.view.viewmodel
 
-import com.example.androidtest.MainCoroutineRule
 import com.exemple.androidTest.core.connectivity.ConnectionDataState
 import com.exemple.androidTest.core.connectivity.ConnectionState
 import com.exemple.androidTest.core.model.Recipe
@@ -8,16 +7,16 @@ import com.exemple.androidTest.core.repository.DataState
 import com.exemple.androidTest.core.repository.RecipesRepository
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.setMain
 
 import org.junit.Test
 import org.junit.Assert.assertEquals
-import org.junit.Rule
+import org.junit.Before
 
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 open class RecipesViewModelTest {
 
     private val repository: RecipesRepository = mockk {
@@ -28,13 +27,18 @@ open class RecipesViewModelTest {
 
     private var connectionDataState: ConnectionDataState = mockk()
 
-    @get:Rule
-    val coroutineRule = MainCoroutineRule()
+
+    private val dispatcher = StandardTestDispatcher()
 
     private lateinit var viewModel: RecipesViewModel
 
+    @Before
+    fun setup(){
+        Dispatchers.setMain(dispatcher)
+    }
+
     @Test
-    fun `When fetching recipes with connectivity is available`() = coroutineRule.run {
+    fun `When fetching recipes with connectivity is available`() {
         // Given
         val recipes = listOf(
             Recipe(
@@ -52,6 +56,8 @@ open class RecipesViewModelTest {
         viewModel = RecipesViewModel(repository, connectionDataState)
         viewModel.getRecipes()
 
+        dispatcher.scheduler.advanceUntilIdle()
+
         // Then
         assertEquals(false, viewModel.state.value.isLoading)
         assertEquals(true, viewModel.state.value.isConnectivityAvailable)
@@ -61,7 +67,7 @@ open class RecipesViewModelTest {
 
 
     @Test
-    fun `When fetching recipes with response error`() = coroutineRule.run {
+    fun `When fetching recipes with response error`() {
         // Given
         val errorMessage = "Error fetching recipes"
 
@@ -69,9 +75,12 @@ open class RecipesViewModelTest {
 
         coEvery { connectionDataState.observeIsConnected() } returns MutableStateFlow(ConnectionState.Unavailable)
 
+
         // When
         viewModel = RecipesViewModel(repository, connectionDataState)
         viewModel.getRecipes()
+
+        dispatcher.scheduler.advanceUntilIdle()
 
         // Then
         assertEquals(false, viewModel.state.value.isLoading)
@@ -81,7 +90,7 @@ open class RecipesViewModelTest {
 
 
     @Test
-    fun `When fetching recipes with connectivity is unavailable`() = coroutineRule.run {
+    fun `When fetching recipes with connectivity is unavailable`() {
         // Given
 
         coEvery { connectionDataState.observeIsConnected() } returns MutableStateFlow(ConnectionState.Unavailable)
@@ -89,6 +98,8 @@ open class RecipesViewModelTest {
         // When
         viewModel = RecipesViewModel(repository, connectionDataState)
         viewModel.getRecipes()
+
+        dispatcher.scheduler.advanceUntilIdle()
 
         // Then
         assertEquals(false, viewModel.state.value.isConnectivityAvailable)

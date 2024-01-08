@@ -1,19 +1,18 @@
 package com.example.androidtest.view.viewmodel
 
-import com.example.androidtest.MainCoroutineRule
 import com.exemple.androidTest.core.model.RecipeDetail
 import com.exemple.androidTest.core.repository.DataState
 import com.exemple.androidTest.core.repository.RecipesRepository
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.Rule
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.setMain
+import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 class RecipeDetailViewModelTest {
 
     private val repository: RecipesRepository = mockk {
@@ -22,17 +21,19 @@ class RecipeDetailViewModelTest {
         } returns MutableStateFlow(DataState.success(mockRecipeDetail))
     }
 
+    private val dispatcher = StandardTestDispatcher()
 
-    @get:Rule
-    val coroutineRule = MainCoroutineRule()
-
+    @Before
+    fun setup(){
+        Dispatchers.setMain(dispatcher)
+    }
     @Test
-    fun `When fetching recipe detail with success`() = coroutineRule.run {
+    fun `When fetching recipe detail with success`()  {
         // Given
         val viewModel = RecipeDetailViewModel(repository, "52885")
-
         // When
         viewModel.getRecipeDetail()
+        dispatcher.scheduler.advanceUntilIdle()
 
         // Then
         assertEquals(false, viewModel.state.value.isLoading)
@@ -41,7 +42,7 @@ class RecipeDetailViewModelTest {
     }
 
     @Test
-    fun `When fetching recipe detail with response error`() = coroutineRule.run {
+    fun `When fetching recipe detail with response error`() {
         // Given
         val errorMessage = "Error fetching recipe detail"
         val repository: RecipesRepository = mockk {
@@ -54,6 +55,7 @@ class RecipeDetailViewModelTest {
 
         // When
         viewModel.getRecipeDetail()
+        dispatcher.scheduler.advanceUntilIdle()
 
         // Then
         assertEquals(false, viewModel.state.value.isLoading)
