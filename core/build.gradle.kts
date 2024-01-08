@@ -2,6 +2,8 @@
 plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
+    kotlin("kapt")
+
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_17

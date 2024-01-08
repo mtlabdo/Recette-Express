@@ -10,7 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.androidtest.navigation.AppNavigation
 import com.example.androidtest.ui.theme.AndroidTestTheme
+import com.example.androidtest.view.viewmodel.RecipeDetailViewModel
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.ActivityComponent
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +26,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @EntryPoint
+    @InstallIn(ActivityComponent::class)
+    interface ViewModelFactoryProvider {
+        fun recipeDetailViewModelFactory(): RecipeDetailViewModel.Factory
+    }
 
     @Composable
     fun RecipesAppTheme() {

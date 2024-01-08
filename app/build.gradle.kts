@@ -2,6 +2,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
+
 }
 
 android {
@@ -41,8 +44,15 @@ android {
         compose = true
     }
     composeOptions {
+    }
+    composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -56,14 +66,15 @@ dependencies {
     implementation(projects.core)
 
     // Repository Module
-    implementation(projects.repository)
+    api(projects.repository)
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
 
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -71,15 +82,32 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.material3)
 
-    // Testing
-    testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
-    testImplementation("io.kotest:kotest-assertions-core:5.6.2")
-    testImplementation("io.kotest:kotest-property:5.6.2")
+    // Hilt
+    api(libs.androidx.hilt.work)
+    testImplementation(libs.junit.jupiter)
+    kapt(libs.androidx.hilt.compiler)
 
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.hilt.navigation.compose)
+
+
+    // Testing
+    testImplementation(libs.test.mockk)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test.junit)
+
+
+    testImplementation(libs.mockito.core.v2245)
+
+    testImplementation(libs.kotlinx.coroutines.test.v152)
+
+
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
+
 }

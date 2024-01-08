@@ -1,6 +1,7 @@
 package com.example.androidtest.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -11,8 +12,8 @@ import androidx.navigation.navArgument
 import com.example.androidtest.ui.Screen
 import com.example.androidtest.ui.screens.RecipeDetailScreen
 import com.example.androidtest.ui.screens.RecipesScreen
+import com.example.androidtest.utils.assistedViewModel
 import com.example.androidtest.view.viewmodel.RecipeDetailViewModel
-import com.example.androidtest.view.viewmodel.RecipesViewModel
 
 const val RECIPES_NAV_HOST_ROUTE = "recipe-main-route"
 
@@ -28,9 +29,7 @@ fun AppNavigation() {
 
         composable(Screen.Recipes.route) {
             RecipesScreen(
-                viewModel = viewModel(
-                    factory = RecipesViewModel.providedFactory
-                ),
+                viewModel = hiltViewModel(),
                 onNavigateToRecipeDetail = { navController.navigateToNoteDetail(it) },
             )
         }
@@ -42,10 +41,16 @@ fun AppNavigation() {
         ) {
             val recipeId =
                 requireNotNull(it.arguments?.getString(Screen.RecipeDetail.ARG_RECIPE_ID))
+
             RecipeDetailScreen(
-                viewModel = viewModel(
-                    factory = RecipeDetailViewModel.providedFactory(recipeId)
-                ),
+
+                viewModel = assistedViewModel {
+                    RecipeDetailViewModel.provideFactory(
+                        recipeDetailViewModelFactory(),
+                        recipeId
+                    )
+                },
+
                 onNavigateUp = { navController.navigateUp() }
             )
         }

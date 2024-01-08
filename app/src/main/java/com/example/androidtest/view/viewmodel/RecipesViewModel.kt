@@ -1,23 +1,27 @@
 package com.example.androidtest.view.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.androidTest.repository.RecipesRemoteRepository
 import com.example.androidtest.view.state.RecipesState
+import com.exemple.androidTest.core.connectivity.ConnectionDataState
+import com.exemple.androidTest.core.connectivity.ConnectionState
 import com.exemple.androidTest.core.model.Recipe
 import com.exemple.androidTest.core.repository.RecipesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipesViewModel(
+@HiltViewModel
+class RecipesViewModel @Inject constructor(
     private val recipesRepository: RecipesRepository,
+    private val connectionDataState: ConnectionDataState
 ) : BaseViewModel<RecipesState>() {
 
     override val state: MutableStateFlow<RecipesState> = MutableStateFlow(RecipesState.initialState)
@@ -25,11 +29,10 @@ class RecipesViewModel(
     private var syncJob: Job? = null
 
     init {
-        getRecipes()
+        observeConnectivity()
     }
 
-
-    private fun getRecipes() {
+     fun getRecipes() {
 
         if (syncJob?.isActive == true) return
         syncJob = viewModelScope.launch {
@@ -56,8 +59,6 @@ class RecipesViewModel(
     private fun setLoadingState() {
         val newState = state.value.copyState()
         newState.isLoading = true
-        newState.recipes = emptyList()
-        newState.error = null
         state.value = newState
     }
 
@@ -65,6 +66,7 @@ class RecipesViewModel(
         val newState = state.value.copyState()
         newState.isLoading = false
         newState.recipes = recipes
+        newState.isConnectivityAvailable = true
         newState.error = null
         state.value = newState
     }
@@ -72,23 +74,38 @@ class RecipesViewModel(
     private fun setErrorState(error: String) {
         val newState = state.value.copyState()
         newState.isLoading = false
+        newState.isConnectivityAvailable = true
         newState.recipes = emptyList()
         newState.error = error
         state.value = newState
     }
 
-    private fun RecipesState.copyState(): RecipesState {
-        return RecipesState()
+
+    private fun changeConnectivityState(isConnected: Boolean) {
+        val newState = state.value.copyState()
+        newState.isConnectivityAvailable = isConnected
+        state.value = newState
+    }
+
+    private fun observeConnectivity() {
+        connectionDataState.observeIsConnected()
+            .distinctUntilChanged()
+            .onEach { isConnected ->
+                if (isConnected == ConnectionState.Available) {
+                    getRecipes()
+                    return@onEach
+                }
+                changeConnectivityState(isConnected == ConnectionState.Available)
+            }
+            .launchIn(viewModelScope)
+    }
+    fun retry() {
+        if (state.value.isConnectivityAvailable == true) {
+            getRecipes()
+        }
     }
 
     companion object {
         private const val TAG = "RecipesViewModel"
-
-        val providedFactory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return RecipesViewModel(RecipesRemoteRepository()) as T
-            }
-        }
     }
 }

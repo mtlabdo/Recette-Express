@@ -35,6 +35,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.androidtest.R
 import com.example.androidtest.ui.widget.LoadingIndicator
+import com.example.androidtest.ui.widget.RecipesDialog
 import com.example.androidtest.ui.widget.ToolbarRecipes
 import com.example.androidtest.utils.collectState
 import com.example.androidtest.utils.collection.ComposeImmutableList
@@ -58,7 +59,8 @@ fun RecipesScreen(
             recipes = recipes,
             isConnectivityAvailable = state.isConnectivityAvailable,
             error = state.error,
-            onNavigateToRecipeDetail = onNavigateToRecipeDetail
+            onNavigateToRecipeDetail = onNavigateToRecipeDetail,
+            onRetryAction = { viewModel.retry() }
         )
     }
 }
@@ -69,18 +71,22 @@ fun RecipesContent(
     recipes: ComposeImmutableList<Recipe>,
     isConnectivityAvailable: Boolean?,
     error: String? = null,
-    onNavigateToRecipeDetail: (String) -> Unit
+    onNavigateToRecipeDetail: (String) -> Unit,
+    onRetryAction: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
+
+
         Column {
             RecipesList(recipes, onNavigateToRecipeDetail)
         }
 
         when {
             isLoading -> LoadingIndicator()
-            isConnectivityAvailable == false -> NoInternetConnectionMessage()
+            isConnectivityAvailable == false -> NoInternetConnectionMessage(onRetryAction)
             error != null -> ErrorMessage(error)
         }
     }
@@ -156,21 +162,18 @@ fun RecipeDetails(title: String) {
 
 
 @Composable
-fun NoInternetConnectionMessage() {
-    Text(
-        text = "No Internet Connection",
-        color = Color.Red,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+fun NoInternetConnectionMessage(retry: () -> Unit = {}) {
+    RecipesDialog(
+        message = stringResource(id = R.string.internet_not_available),
+        buttonText = stringResource(id = R.string.retry_text),
+        onButtonClick = retry
     )
 }
 
 @Composable
 fun ErrorMessage(error: String) {
     Text(
-        text = "Error: $error",
+        text = error,
         color = Color.Red,
         textAlign = TextAlign.Center,
         modifier = Modifier

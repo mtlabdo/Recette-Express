@@ -9,6 +9,14 @@ class RecipesState(
     var isConnectivityAvailable: Boolean? = null,
 ) : State {
 
+    fun copyState(
+        isLoading: Boolean = this.isLoading,
+        data: List<Recipe> = this.recipes,
+        error: String? = this.error,
+        isConnectivityAvailable: Boolean? = this.isConnectivityAvailable
+    ): RecipesState {
+        return RecipesState(isLoading = isLoading, recipes = data, error = error, isConnectivityAvailable =  isConnectivityAvailable)
+    }
 
     companion object {
         val initialState = RecipesState(

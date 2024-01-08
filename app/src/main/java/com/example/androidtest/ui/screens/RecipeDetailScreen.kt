@@ -105,7 +105,7 @@ fun RecipeDetails(recipeDetail: RecipeDetail?, context: Context) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        RecipeDetailItem("Nom de la recette", recipeDetail?.strMeal ?: "Non disponible")
+        RecipeDetailItem(stringResource(id = R.string.recipe_name), recipeDetail?.strMeal ?: "Non disponible")
         Spacer(modifier = Modifier.height(16.dp))
 
         recipeDetail?.strMealThumb?.let { imageUrl ->
@@ -128,7 +128,7 @@ fun RecipeDetails(recipeDetail: RecipeDetail?, context: Context) {
 
         CardWithTextView(
             modifier = Modifier.fillMaxWidth(),
-            label = "Voir la vidéo",
+            label = stringResource(id = R.string.show_video),
             icon = android.R.drawable.ic_media_play, // Replace with your actual icon
             onClick = {
                 recipeDetail?.strYoutube?.let {
@@ -138,11 +138,11 @@ fun RecipeDetails(recipeDetail: RecipeDetail?, context: Context) {
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        RecipeDetailItem("Catégorie", recipeDetail?.strCategory ?: "Non disponible")
+        RecipeDetailItem(stringResource(id = R.string.recipe_category), recipeDetail?.strCategory ?: stringResource(id = R.string.not_available))
         Spacer(modifier = Modifier.height(8.dp))
-        RecipeDetailItem("Région", recipeDetail?.strArea ?: "Non disponible")
+        RecipeDetailItem(stringResource(id = R.string.recipe_region), recipeDetail?.strArea ?: stringResource(id = R.string.not_available))
         Spacer(modifier = Modifier.height(8.dp))
-        RecipeDetailItem("Instructions", recipeDetail?.strInstructions ?: "Non disponibles")
+        RecipeDetailItem(stringResource(id = R.string.recipe_instructions), recipeDetail?.strInstructions ?: stringResource(id = R.string.not_available))
     }
 }
 

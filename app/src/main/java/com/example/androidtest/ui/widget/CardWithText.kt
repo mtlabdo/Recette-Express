@@ -64,7 +64,7 @@ fun CardWithTextView(
 fun CardWithTextViewPreview() {
     CardWithTextView(
         modifier = Modifier.fillMaxWidth(),
-        label = "Afficher detail",
+        label = "Afficher le detail",
         onClick = {  },
         icon = android.R.drawable.ic_menu_more
     )

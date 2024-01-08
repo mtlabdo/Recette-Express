@@ -1,6 +1,8 @@
 plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
+    kotlin("kapt")
+
 }
 
 java {
@@ -17,10 +19,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
 
     // Coroutine test
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
-    // Google truth for assertion
-    testImplementation("com.google.truth:truth:1.1.3")
+    testImplementation(libs.kotlinx.coroutines.test)
 
     testImplementation(libs.junit)
 }
