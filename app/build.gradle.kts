@@ -68,6 +68,8 @@ dependencies {
     // Repository Module
     api(projects.repository)
 
+
+
     implementation(libs.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
@@ -81,6 +83,16 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.material3)
+
+    implementation(libs.converter.gson)
+
+
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+
 
     // Hilt
     api(libs.androidx.hilt.work)
@@ -102,7 +114,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test.v152)
 
     testImplementation(libs.androidx.core.testing)
-
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
