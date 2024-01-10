@@ -1,6 +1,7 @@
 [versions]
 agp = "8.1.1"
 coil-compose = "2.5.0"
+converter-gson = "2.9.0"
 core-testing = "2.2.0"
 hilt-work = "1.1.0"
 javax-inject = "1"
@@ -26,6 +27,7 @@ moshi = "1.15.0"
 retrofit = "2.9.0"
 retrofit-interceptor-logging = "4.11.0"
 kotlinx-coroutines = "1.7.3"
+room-runtime = "2.6.1"
 work-runtime-ktx = "2.9.0"
 test-mockk = "1.13.8"
 
@@ -35,8 +37,12 @@ androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-work" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converter-gson" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -82,6 +88,7 @@ retrofit = ["retrofit", "retrofit-converter-moshi", "retrofit-interceptor-loggin
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

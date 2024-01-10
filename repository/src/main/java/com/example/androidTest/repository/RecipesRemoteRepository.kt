@@ -1,7 +1,7 @@
 package com.example.androidTest.repository
 
 import com.example.androidTest.mapper.toDataModel
-import com.example.data.androidTest.remote.api.RecipesService
+import com.example.data.androidTest.remote.api.ApiInterface
 import com.example.data.androidTest.remote.util.getResponse
 import com.exemple.androidTest.core.model.Recipe
 import com.exemple.androidTest.core.model.RecipeDetail
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RecipesRemoteRepository @Inject internal constructor(
-    private val recipesService: RecipesService
+    private val recipesService: ApiInterface
 ) : RecipesRepository {
 
     // TODO MANAGE ERRORS (API don't have generic response)

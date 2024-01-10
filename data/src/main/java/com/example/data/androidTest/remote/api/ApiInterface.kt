@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RecipesService {
+interface ApiInterface {
 
     @GET("/api/json/v1/1/filter.php?i=")
     suspend fun getRecipes(@Query("s") category: String): Response<RecipesResponse?>

@@ -16,6 +16,8 @@ dependencies {
     implementation(project(":core"))
 
     api(libs.bundles.retrofit)
+    implementation(libs.converter.gson)
+
     implementation(libs.moshi.kotlin)
 
     // Coroutine test
