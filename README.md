@@ -1,7 +1,5 @@
 # android-test
 
-Ce projet a pour but d'être transmis aux candidats postulant pour un poste de développeur Android chez Chargemap.
-
 L'objectif est de créer un projet simple qui respecte certaines contraintes.
 
 Objectifs :
