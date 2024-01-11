@@ -2,6 +2,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
+    id(libs.plugins.ksp.get().pluginId)
 
 }
 java {

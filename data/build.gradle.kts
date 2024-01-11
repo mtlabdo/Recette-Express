@@ -1,7 +1,7 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.kotlinAndroid.get().pluginId)
-    id("com.google.devtools.ksp")
+    id(libs.plugins.ksp.get().pluginId)
 }
 
 android {
