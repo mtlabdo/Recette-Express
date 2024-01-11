@@ -3,8 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
-
+    id(libs.plugins.ksp.get().pluginId)
 }
 
 android {
@@ -86,21 +85,13 @@ dependencies {
 
     implementation(libs.converter.gson)
 
-
-
-    // To use Kotlin annotation processing tool (kapt)
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-
-
     // Hilt
     api(libs.androidx.hilt.work)
     testImplementation(libs.junit.jupiter)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.hilt.navigation.compose)
 
