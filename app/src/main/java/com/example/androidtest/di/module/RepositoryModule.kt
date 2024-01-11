@@ -1,4 +1,4 @@
-package com.example.androidtest.di
+package com.example.androidtest.di.module
 
 import com.example.androidTest.repository.RecipesRemoteRepository
 import com.exemple.androidTest.core.repository.RecipesRepository

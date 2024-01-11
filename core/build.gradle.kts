@@ -2,7 +2,6 @@
 plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
-    kotlin("kapt")
 
 }
 java {

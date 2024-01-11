@@ -1,18 +1,29 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    id("java-library")
-    alias(libs.plugins.kotlin.jvm)
-    kotlin("kapt")
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.kotlinAndroid.get().pluginId)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+android {
+    namespace = "com.example.androidtest.repository"
+    compileSdk = 34
+
+    defaultConfig {
+        minSdk = 22
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
 }
 
 dependencies {
 
-    api(projects.data)
 
     implementation(libs.kotlinx.coroutines.core)
 

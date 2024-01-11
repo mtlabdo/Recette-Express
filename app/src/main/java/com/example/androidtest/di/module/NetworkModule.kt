@@ -1,8 +1,9 @@
-package com.example.androidtest.di
+package com.example.androidtest.di.module
 
 import android.content.Context
 import android.net.ConnectivityManager
 import com.example.androidtest.BuildConfig
+import com.example.androidtest.di.BaseUrl
 import com.example.androidtest.utils.ConnectionDataSourceImpl
 import com.example.data.androidTest.remote.api.ApiInterface
 import com.example.data.androidTest.remote.retrofit.RetrofitService
