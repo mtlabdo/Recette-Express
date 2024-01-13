@@ -38,5 +38,7 @@ Versions:
 
 ```mermaid
 graph TD;
-   A-->B;
+   app-->core;
+   core-->repository;
+   repository-->data;
 ```
