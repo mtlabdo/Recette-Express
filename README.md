@@ -33,8 +33,9 @@ Versions:
 - Kotlin : 1.9.0
 - Gradle : 8.1.1
 
+## Architecture
 
-
+### Modules Dependency Flow
 
 ```mermaid
 graph TD;
@@ -42,3 +43,29 @@ graph TD;
    repository-->core;
    repository-->data;
 ```
+<div data-mermaid-graph-name="simple">
+### Data Flow
+
+```mermaid
+graph TD;
+   Screen-->|OnAction| ViewModel;
+   ViewModel-->|ViewState update| Screen;
+
+   ViewModel-->|execute| Repository-Interface;
+   Repository-Interface-->|Result callback| ViewModel;
+
+   Repository-Implementation<-->|Call method, get result| Repository-Interface;
+
+   Repository-Implementation<-->|Call method, get result| Data;
+
+   C{Local}-->Data;
+   B{Network}-->Data;
+```
+</div>
+
+
+
+
+
+
+
