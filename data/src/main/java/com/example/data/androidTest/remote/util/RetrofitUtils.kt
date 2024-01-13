@@ -1,6 +1,5 @@
 package com.example.data.androidTest.remote.util
 
-import com.exemple.androidTest.core.utils.fromJson
 import retrofit2.Response
 
 /**

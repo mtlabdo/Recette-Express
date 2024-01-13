@@ -32,3 +32,11 @@ Versions:
 - Android Studio : Android Studio Giraffe | 2022.3.1 Patch 1
 - Kotlin : 1.9.0
 - Gradle : 8.1.1
+
+
+```mermaid
+  graph AR;
+      app-->core;
+      core-->repository;
+      repository-->data;
+```
