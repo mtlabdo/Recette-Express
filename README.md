@@ -34,11 +34,9 @@ Versions:
 - Gradle : 8.1.1
 
 
-<div data-mermaid-graph-name="simple">
+
 
 ```mermaid
 graph TD;
    A-->B;
 ```
-
-</div>
