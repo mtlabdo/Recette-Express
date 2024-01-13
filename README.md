@@ -35,8 +35,12 @@ Versions:
 
 
 ```mermaid
-  graph AR;
-      app-->core;
-      core-->repository;
-      repository-->data;
+	graph TD;
+	subgraph A
+	  subgraph B
+		C
+	  end
+	end
+	A --> D
+	B --> D
 ```
