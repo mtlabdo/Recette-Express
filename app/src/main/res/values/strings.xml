@@ -3,20 +3,20 @@
     <string name="app_name" translatable="false">Recette Express</string>
     <string name="image_content_description">Photo de la recette</string>
     <string name="toolbar_recipes">Recipes</string>
-    <string name="toolbar_detail">Recipe Detail</string>
+    <string name="toolbar_detail">Détail de la recette</string>
 
-    <string name="recipe_name">Recipe Name</string>
-    <string name="recipe_category">Category</string>
-    <string name="recipe_region">Region</string>
+    <string name="recipe_name">Nom de la recette</string>
+    <string name="recipe_category">Catégorie</string>
+    <string name="recipe_region">Région</string>
     <string name="recipe_instructions">Instructions</string>
-    <string name="show_video">Watch the Video</string>
+    <string name="show_video">Regarder la video</string>
 
-    <string name="not_available">Not Available</string>
+    <string name="not_available">Non disponible</string>
 
-    <string name="internet_not_available">No Internet connection, please check your connection.</string>
+    <string name="internet_not_available">Pas de connexion Internet, veuillez vérifier votre connexion</string>
 
-    <string name="recipe_not_found">No recipe found</string>
+    <string name="recipe_not_found">Aucune recette trouvée</string>
 
-    <string name="retry_text">Retry</string>
+    <string name="retry_text">Réessayer</string>
 
 </resources>

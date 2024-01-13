@@ -1,12 +1,10 @@
 package com.example.androidtest.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,65 +35,57 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.androidtest.R
 import com.example.androidtest.ui.widget.LoadingIndicator
-import com.example.androidtest.ui.widget.RecipesDialog
 import com.example.androidtest.ui.widget.ToolbarRecipes
-import com.example.androidtest.utils.collectState
-import com.example.androidtest.utils.collection.ComposeImmutableList
-import com.example.androidtest.utils.collection.rememberComposeImmutableList
+import com.example.androidtest.view.state.RecipesViewState
 import com.example.androidtest.view.viewmodel.RecipesViewModel
+import com.exemple.androidTest.core.dispatcher.DispatcherProvider
 import com.exemple.androidTest.core.model.Recipe
 
 @Composable
 fun RecipesScreen(
     viewModel: RecipesViewModel,
+    coroutineDispatcher: DispatcherProvider,
     onNavigateToRecipeDetail: (String) -> Unit,
 ) {
-    val state by viewModel.collectState()
-    val recipes by rememberComposeImmutableList { state.recipes }
 
     Column {
+
         ToolbarRecipes(stringResource(id = R.string.toolbar_recipes))
 
-        RecipesContent(
-            isLoading = state.isLoading,
-            recipes = recipes,
-            isConnectivityAvailable = state.isConnectivityAvailable,
-            error = state.error,
-            onNavigateToRecipeDetail = onNavigateToRecipeDetail,
-            onRetryAction = { viewModel.retry() }
+
+        val viewState = viewModel.viewState.collectAsState(
+            RecipesViewState.Loading,
+            coroutineDispatcher.main
         )
-    }
-}
 
-@Composable
-fun RecipesContent(
-    isLoading: Boolean,
-    recipes: ComposeImmutableList<Recipe>,
-    isConnectivityAvailable: Boolean?,
-    error: String? = null,
-    onNavigateToRecipeDetail: (String) -> Unit,
-    onRetryAction: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+        val lastRecipesState = remember { mutableStateOf<RecipesViewState.Success?>(null) }
+        val viewStateValue = viewState.value
 
-
-
-        Column {
-            RecipesList(recipes, onNavigateToRecipeDetail)
+        if (viewStateValue is RecipesViewState.Success) {
+            lastRecipesState.value = viewStateValue
         }
 
-        when {
-            isLoading -> LoadingIndicator()
-            isConnectivityAvailable == false -> NoInternetConnectionMessage(onRetryAction)
-            error != null -> ErrorMessage(error)
+        when (viewStateValue) {
+            is RecipesViewState.Loading -> {
+                LoadingIndicator()
+            }
+
+            is RecipesViewState.Success -> {
+                val recipesState = lastRecipesState.value
+                RecipesList(recipesState?.recipes ?: emptyList(), onNavigateToRecipeDetail)
+            }
+
+            is RecipesViewState.Error -> {
+                ErrorMessage(viewStateValue.error)
+            }
+
+            else -> {}
         }
     }
 }
 
 @Composable
-fun RecipesList(recipes: ComposeImmutableList<Recipe>, onClick: (String) -> Unit) {
+fun RecipesList(recipes: List<Recipe>, onClick: (String) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 4.dp),
     ) {
@@ -102,8 +94,8 @@ fun RecipesList(recipes: ComposeImmutableList<Recipe>, onClick: (String) -> Unit
             key = { it.idMeal }
         ) { recipe ->
             RecipeCard(
-                title = recipe.strMeal ?: "",
-                recipeThumb = recipe.strMealThumb,
+                title = recipe.name ?: "",
+                recipeThumb = recipe.image,
                 onRecipeClick = { onClick(recipe.idMeal) }
             )
         }
@@ -160,16 +152,6 @@ fun RecipeDetails(title: String) {
     }
 }
 
-
-@Composable
-fun NoInternetConnectionMessage(retry: () -> Unit = {}) {
-    RecipesDialog(
-        message = stringResource(id = R.string.internet_not_available),
-        buttonText = stringResource(id = R.string.retry_text),
-        onButtonClick = retry
-    )
-}
-
 @Composable
 fun ErrorMessage(error: String) {
     Text(
@@ -180,5 +162,4 @@ fun ErrorMessage(error: String) {
             .fillMaxWidth()
             .padding(16.dp)
     )
-
 }

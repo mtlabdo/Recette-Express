@@ -1,10 +1,10 @@
 package com.example.data.androidTest.remote.model
 
-data class RecipesResponse(
-    val meals : List<Meal> = emptyList()
+data class RecipesResponseNetwork(
+    val meals : List<RecipeNetwork> = emptyList()
 )
 
-data class Meal(
+data class RecipeNetwork(
     val idMeal : String,
     val strMeal : String,
     val strMealThumb : String?,

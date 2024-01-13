@@ -2,7 +2,6 @@ package com.example.androidtest.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,11 +13,13 @@ import com.example.androidtest.ui.screens.RecipeDetailScreen
 import com.example.androidtest.ui.screens.RecipesScreen
 import com.example.androidtest.utils.assistedViewModel
 import com.example.androidtest.view.viewmodel.RecipeDetailViewModel
+import com.exemple.androidTest.core.dispatcher.DispatcherProvider
 
 const val RECIPES_NAV_HOST_ROUTE = "recipe-main-route"
 
+
 @Composable
-fun AppNavigation() {
+fun AppNavigation(dispatcherProvider: DispatcherProvider) {
     val navController = rememberNavController()
 
     NavHost(
@@ -30,6 +31,7 @@ fun AppNavigation() {
         composable(Screen.Recipes.route) {
             RecipesScreen(
                 viewModel = hiltViewModel(),
+                coroutineDispatcher = dispatcherProvider,
                 onNavigateToRecipeDetail = { navController.navigateToNoteDetail(it) },
             )
         }
@@ -50,7 +52,7 @@ fun AppNavigation() {
                         recipeId
                     )
                 },
-
+                coroutineDispatcher = dispatcherProvider,
                 onNavigateUp = { navController.navigateUp() }
             )
         }

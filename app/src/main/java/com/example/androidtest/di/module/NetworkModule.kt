@@ -41,7 +41,9 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor) =
+    fun provideHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor
+    ) =
         RetrofitService.getHttpClient(httpLoggingInterceptor)
 
     @Provides
@@ -51,7 +53,11 @@ class NetworkModule {
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): ApiInterface {
-        return RetrofitService.getRetrofit<ApiInterface>(baseUrl, okHttpClient, gsonConverterFactory)
+        return RetrofitService.getRetrofit<ApiInterface>(
+            baseUrl,
+            okHttpClient,
+            gsonConverterFactory
+        )
     }
 
     @Provides

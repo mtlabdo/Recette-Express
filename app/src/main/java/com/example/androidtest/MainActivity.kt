@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import com.example.androidtest.navigation.AppNavigation
 import com.example.androidtest.ui.theme.AndroidTestTheme
 import com.example.androidtest.view.viewmodel.RecipeDetailViewModel
+import com.exemple.androidTest.core.dispatcher.DispatcherProvider
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -32,6 +34,9 @@ class MainActivity : ComponentActivity() {
         fun recipeDetailViewModelFactory(): RecipeDetailViewModel.Factory
     }
 
+    @Inject
+    lateinit var coroutineDispatcher: DispatcherProvider
+
     @Composable
     fun RecipesAppTheme() {
         AndroidTestTheme {
@@ -40,7 +45,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                AppNavigation()
+                AppNavigation(coroutineDispatcher)
             }
         }
     }

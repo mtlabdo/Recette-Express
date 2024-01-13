@@ -2,20 +2,13 @@ package com.example.androidtest.view.state
 
 import com.exemple.androidTest.core.model.RecipeDetail
 
-class RecipeDetailState(
-    var isLoading: Boolean = false,
-    var error: String? = null,
-    var recipeDetail: RecipeDetail? = null,
-    var isConnectivityAvailable: Boolean? = null,
-) : State {
+sealed interface RecipeDetailViewState {
 
-    companion object {
-        val initialState = RecipeDetailState(
-            isLoading = false,
-            error = null,
-            recipeDetail = null,
-            isConnectivityAvailable = null
-        )
-    }
+    data object Loading : RecipeDetailViewState
 
+    data class Success(
+        val recipeDetail: RecipeDetail
+    ) : RecipeDetailViewState
+
+    data class Error(val error: String) : RecipeDetailViewState
 }

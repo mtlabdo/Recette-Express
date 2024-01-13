@@ -31,11 +31,12 @@ dependencies {
     api(libs.bundles.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(libs.kotlinx.coroutines.core)
 
     // To use Kotlin annotation processing tool (kapt)
-    implementation(libs.androidx.room.runtime)
+    api(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-    annotationProcessor(libs.androidx.room.compiler)
 
     implementation(libs.moshi.kotlin)
 

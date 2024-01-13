@@ -1,7 +1,7 @@
 package com.example.androidtest.di.module
 
 import com.example.androidtest.di.BaseUrl
-import com.example.data.androidTest.remote.Constant
+import com.example.data.androidTest.Constant
 import com.exemple.androidTest.core.dispatcher.DefaultDispatcherProvider
 import com.exemple.androidTest.core.dispatcher.DispatcherProvider
 import dagger.Module

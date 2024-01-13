@@ -21,7 +21,9 @@ object RetrofitService {
         return retrofit.create(T::class.java)
     }
 
-    fun getHttpClient(logging: HttpLoggingInterceptor) =
+    fun getHttpClient(
+        logging: HttpLoggingInterceptor
+    ) =
         OkHttpClient.Builder()
             .readTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(logging)
