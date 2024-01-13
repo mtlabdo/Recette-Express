@@ -34,13 +34,11 @@ Versions:
 - Gradle : 8.1.1
 
 
+<div data-mermaid-graph-name="simple">
+
 ```mermaid
-	graph TD;
-	subgraph A
-	  subgraph B
-		C
-	  end
-	end
-	A --> D
-	B --> D
+graph TD;
+   A-->B;
 ```
+
+</div>
