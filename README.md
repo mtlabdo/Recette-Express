@@ -1,7 +1,20 @@
 # android-test
 
-<div data-mermaid-graph-name="simple">
+## Architecture
+
+### Modules Dependency Flow
+
+```mermaid
+graph TD;
+   app-->core;
+   repository-->core;
+   repository-->data;
+```
+
 ### Data Flow
+
+<div data-mermaid-graph-name="simple">
+
 
 ```mermaid
 graph TD;
@@ -55,16 +68,7 @@ Versions:
 - Kotlin : 1.9.0
 - Gradle : 8.1.1
 
-## Architecture
 
-### Modules Dependency Flow
-
-```mermaid
-graph TD;
-   app-->core;
-   repository-->core;
-   repository-->data;
-```
 
 
 
