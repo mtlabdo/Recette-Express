@@ -13,8 +13,6 @@ java {
 
 dependencies {
 
-    implementation(project(":core"))
-
     api(libs.bundles.retrofit)
     implementation(libs.converter.gson)
 

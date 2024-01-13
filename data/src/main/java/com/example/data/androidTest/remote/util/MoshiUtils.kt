@@ -1,4 +1,4 @@
-package com.exemple.androidTest.core.utils
+package com.example.data.androidTest.remote.util
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
