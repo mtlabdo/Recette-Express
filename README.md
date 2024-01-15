@@ -1,5 +1,40 @@
 # android-test
 
+## Architecture
+
+### Modules Dependency Flow
+
+```mermaid
+graph TD;
+   app-->core;
+   repository-->core;
+   repository-->data;
+```
+
+### Data Flow
+
+<div data-mermaid-graph-name="simple">
+
+
+```mermaid
+graph TD;
+   Screen-->|OnAction| ViewModel;
+   ViewModel-->|ViewState update| Screen;
+
+   ViewModel-->|execute| Repository-Interface;
+   Repository-Interface-->|Result callback| ViewModel;
+
+   Repository-Implementation<-->|Call method, get result| Repository-Interface;
+
+   Repository-Implementation<-->|Call method, get result| Data;
+
+   C{Local}-->Data;
+   B{Network}-->Data;
+```
+</div>
+
+
+
 L'objectif est de créer un projet simple qui respecte certaines contraintes.
 
 Objectifs :
@@ -32,3 +67,11 @@ Versions:
 - Android Studio : Android Studio Giraffe | 2022.3.1 Patch 1
 - Kotlin : 1.9.0
 - Gradle : 8.1.1
+
+
+
+
+
+
+
+
