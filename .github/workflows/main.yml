@@ -3,8 +3,6 @@ name: Android Build
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
 
@@ -21,37 +19,28 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-  unit-tests:
-    needs: setup
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-          cache: gradle
-
+      # Run Tests Build
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest --no-daemon
 
-  generate-bundle:
-    needs: unit-tests
-    runs-on: ubuntu-latest
-    steps:
+      # Create APK Debug
+      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
+        run: ./gradlew assembleDebug
+
+      # Create APK Release
+      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+        run: ./gradlew assemble
+
+
+      # Create Bundle AAB Release
       - name: Decode keystore
         run: echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > keystore.jks
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Build and Sign AAB
         run: |
@@ -62,6 +51,24 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           JAVA_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=false -Dkotlin.incremental=false
 
+
+
+      # Upload AAB Release
+      - name: Upload APK Debug
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      # Upload APK Release
+      - name: Upload APK Release
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-apk
+          path: app/build/outputs/apk/release/app-release.apk
+
+
+      # Upload AAB Release
       - name: Upload AAB
         uses: actions/upload-artifact@v2
         with:
