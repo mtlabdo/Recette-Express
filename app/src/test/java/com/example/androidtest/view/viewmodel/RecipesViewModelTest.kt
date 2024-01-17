@@ -1,108 +1,106 @@
 package com.example.androidtest.view.viewmodel
 
-import com.exemple.androidTest.core.connectivity.ConnectionDataState
-import com.exemple.androidTest.core.connectivity.ConnectionState
+import com.example.androidtest.TestDispatcherProvider
+import com.example.androidtest.view.state.RecipesViewState
+import com.exemple.androidTest.core.dispatcher.DispatcherProvider
 import com.exemple.androidTest.core.model.Recipe
 import com.exemple.androidTest.core.repository.DataState
+import com.exemple.androidTest.core.repository.ErrorHolder
 import com.exemple.androidTest.core.repository.RecipesRepository
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Before
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 open class RecipesViewModelTest {
 
-    private val repository: RecipesRepository = mockk {
-        coEvery {
-            getAllRecipes()
-        } returns mockk()
-    }
+    private val repository: RecipesRepository = mockk()
 
-    private var connectionDataState: ConnectionDataState = mockk()
-
-
-    private val dispatcher = StandardTestDispatcher()
+    private lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var viewModel: RecipesViewModel
 
     @Before
-    fun setup(){
-        Dispatchers.setMain(dispatcher)
+    fun setup() {
+        dispatcherProvider = TestDispatcherProvider()
+        Dispatchers.setMain(dispatcherProvider.main)
+
     }
 
     @Test
-    fun `When fetching recipes with connectivity is available`() {
-        // Given
-        val recipes = listOf(
-            Recipe(
-                idMeal = "52885",
-                strMeal = "ubble & Squeak",
-                strMealThumb = "https://www.themealdb.com/images/media/meals/xusqvw1511638311.jpg"
+    fun `Fetch Recipes when repository response success, Should set Success View state `() =
+        runTest {
+            // Given
+            val recipes = listOf(
+                Recipe(
+                    idMeal = "52885",
+                    name = "ubble & Squeak",
+                    image = "https://www.themealdb.com/images/media/meals/xusqvw1511638311.jpg"
+                )
             )
-        )
 
-        coEvery { repository.getAllRecipes() } returns MutableStateFlow(DataState.success(recipes))
+            val lastViewState = MutableStateFlow<RecipesViewState>(RecipesViewState.Loading)
 
-        coEvery { connectionDataState.observeIsConnected() } returns MutableStateFlow(ConnectionState.Available)
+            every { repository.getAllRecipes() } returns MutableStateFlow(DataState.success(recipes))
+            viewModel = RecipesViewModel(repository, dispatcherProvider)
 
-        // When
-        viewModel = RecipesViewModel(repository, connectionDataState)
-        viewModel.getRecipes()
+            val job = launch(dispatcherProvider.main) {
+                viewModel.viewState.collectLatest {
+                    lastViewState.emit(it)
+                }
+            }
 
-        dispatcher.scheduler.advanceUntilIdle()
-
-        // Then
-        assertEquals(false, viewModel.state.value.isLoading)
-        assertEquals(true, viewModel.state.value.isConnectivityAvailable)
-        assertEquals(recipes, viewModel.state.value.recipes)
-        assertEquals(null, viewModel.state.value.error)
-    }
+            // Then
+            verify(exactly = 1) {
+                repository.getAllRecipes()
+            }
+            assertEquals(RecipesViewState.Success(recipes = recipes), lastViewState.value)
+            job.cancel()
+        }
 
 
     @Test
-    fun `When fetching recipes with response error`() {
-        // Given
+    fun `Fetch Recipes when repository response Error, Should set Error View state `() = runTest {
         val errorMessage = "Error fetching recipes"
 
-        coEvery { repository.getAllRecipes() } returns MutableStateFlow(DataState.Error(errorMessage))
+        coEvery { repository.getAllRecipes() } returns MutableStateFlow(
+            DataState.failure(
+                ErrorHolder.Unknown(errorMessage)
+            )
+        )
+        viewModel = RecipesViewModel(repository, dispatcherProvider)
 
-        coEvery { connectionDataState.observeIsConnected() } returns MutableStateFlow(ConnectionState.Unavailable)
+        val lastViewState = MutableStateFlow<RecipesViewState>(RecipesViewState.Loading)
 
-
-        // When
-        viewModel = RecipesViewModel(repository, connectionDataState)
-        viewModel.getRecipes()
-
-        dispatcher.scheduler.advanceUntilIdle()
+        val job = launch(dispatcherProvider.main) {
+            viewModel.viewState.collectLatest {
+                lastViewState.emit(it)
+            }
+        }
 
         // Then
-        assertEquals(false, viewModel.state.value.isLoading)
-        assertEquals(emptyList<Recipe>(), viewModel.state.value.recipes)
-        assertEquals(errorMessage, viewModel.state.value.error)
+        assertEquals(RecipesViewState.Error(errorMessage), lastViewState.value)
+        job.cancel()
     }
 
-
-    @Test
-    fun `When fetching recipes with connectivity is unavailable`() {
-        // Given
-
-        coEvery { connectionDataState.observeIsConnected() } returns MutableStateFlow(ConnectionState.Unavailable)
-
-        // When
-        viewModel = RecipesViewModel(repository, connectionDataState)
-        viewModel.getRecipes()
-
-        dispatcher.scheduler.advanceUntilIdle()
-
-        // Then
-        assertEquals(false, viewModel.state.value.isConnectivityAvailable)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }
 

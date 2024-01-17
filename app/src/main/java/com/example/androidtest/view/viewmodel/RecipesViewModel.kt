@@ -28,7 +28,7 @@ class RecipesViewModel @Inject constructor(
         getRecipes()
     }
 
-    private fun getRecipes() {
+    fun getRecipes() {
 
         if (syncJob?.isActive == true) return
         syncJob = viewModelScope.launch {
