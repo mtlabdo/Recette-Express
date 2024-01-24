@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,31 +27,28 @@ class RecipesViewModel @Inject constructor(
         getRecipes()
     }
 
-    fun getRecipes() {
+    private fun getRecipes() {
 
         if (syncJob?.isActive == true) return
-        syncJob = viewModelScope.launch {
-            try {
-                recipesRepository.getAllRecipes()
-                    .distinctUntilChanged()
-                    .map {
-                        it.onSuccess { recipes ->
-                            updateViewState(RecipesViewState.Success(recipes))
-                        }
-                        it.onFailure { error ->
-                            updateViewState(RecipesViewState.Error(error.message))
-                        }
+        try {
+            syncJob = recipesRepository.getAllRecipes()
+                .distinctUntilChanged()
+                .map {
+                    it.onSuccess { recipes ->
+                        updateViewState(RecipesViewState.Success(recipes))
                     }
-                    .onStart {
-                        updateViewState(RecipesViewState.Loading)
+                    it.onFailure { error ->
+                        updateViewState(RecipesViewState.Error(error.message))
                     }
-                    .flowOn(dispatcherProvider.io)
-                    .launchIn(viewModelScope)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                updateViewState(RecipesViewState.Error("Can not get recipes"))
-            }
+                }
+                .onStart {
+                    updateViewState(RecipesViewState.Loading)
+                }
+                .flowOn(dispatcherProvider.io)
+                .launchIn(viewModelScope)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            updateViewState(RecipesViewState.Error("Can not get recipes"))
         }
     }
 

@@ -32,7 +32,7 @@ fun AppNavigation(dispatcherProvider: DispatcherProvider) {
             RecipesScreen(
                 viewModel = hiltViewModel(),
                 coroutineDispatcher = dispatcherProvider,
-                onNavigateToRecipeDetail = { navController.navigateToNoteDetail(it) },
+                onNavigateToRecipeDetail = { navController.navigateToRecipeDetail(it) },
             )
         }
 
@@ -62,6 +62,6 @@ fun AppNavigation(dispatcherProvider: DispatcherProvider) {
 /**
  * Launches recipe detail screen for specified [recipeId]
  */
-fun NavController.navigateToNoteDetail(noteId: String) = navigate(Screen.RecipeDetail.route(noteId))
+fun NavController.navigateToRecipeDetail(recipeId: String) = navigate(Screen.RecipeDetail.route(recipeId))
 
 

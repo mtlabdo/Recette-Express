@@ -15,6 +15,6 @@ abstract class RepositoryModule {
      * @Binds indique à Hilt l'implémentation à utiliser lorsqu'il doit fournir une instance d'une interface.
      */
     @Binds
-    abstract fun recipesRemoteNoteRepository(recipesRepository: RecipesRemoteRepository): RecipesRepository
+    abstract fun recipesRemoteRecipeRepository(recipesRepository: RecipesRemoteRepository): RecipesRepository
 
 }

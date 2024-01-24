@@ -16,6 +16,10 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -39,6 +43,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun RecipesAppTheme() {
+
+
         AndroidTestTheme {
             // A surface container using the 'background' color from the theme
             Surface(

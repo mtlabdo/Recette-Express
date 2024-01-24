@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 
 class RecipeDetailViewModel @AssistedInject constructor(
     private val recipesRepository: RecipesRepository,
@@ -30,27 +29,26 @@ class RecipeDetailViewModel @AssistedInject constructor(
         getRecipeDetail()
     }
 
-    fun getRecipeDetail() {
+    private fun getRecipeDetail() {
         if (syncJob?.isActive == true) return
-        syncJob = viewModelScope.launch {
-            try {
-                recipesRepository.getRecipeById(recipeId)
-                    .onStart { updateViewState(RecipeDetailViewState.Loading) }
-                    .map { it ->
-                        it.onSuccess { recipeDetail ->
-                            updateViewState(RecipeDetailViewState.Success(recipeDetail))
-                        }
-                        it.onFailure { error ->
-                            updateViewState(RecipeDetailViewState.Error(error.message))
-                        }
+        try {
+            syncJob = recipesRepository.getRecipeById(recipeId)
+                .onStart { updateViewState(RecipeDetailViewState.Loading) }
+                .map { it ->
+                    it.onSuccess { recipeDetail ->
+                        updateViewState(RecipeDetailViewState.Success(recipeDetail))
                     }
-                    .flowOn(dispatcherProvider.io)
-                    .launchIn(viewModelScope)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                updateViewState(RecipeDetailViewState.Error("Can not get recipe Detail"))
-            }
+                    it.onFailure { error ->
+                        updateViewState(RecipeDetailViewState.Error(error.message))
+                    }
+                }
+                .flowOn(dispatcherProvider.io)
+                .launchIn(viewModelScope)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            updateViewState(RecipeDetailViewState.Error("Can not get recipe Detail"))
         }
+
     }
 
     @AssistedFactory

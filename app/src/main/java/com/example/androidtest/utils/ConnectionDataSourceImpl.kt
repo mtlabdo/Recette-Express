@@ -29,6 +29,7 @@ class ConnectionDataSourceImpl(
             emitConnectionUpdate(ConnectionState.Available)
         }
 
+
         override fun onLost(network: Network) {
             emitConnectionUpdate(
                 if (isConnected()) {
