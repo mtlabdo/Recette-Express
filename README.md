@@ -48,7 +48,6 @@ Objectifs :
 - Tests unitaires sur l'appel API
 - Le sujet est libre.
 - Le design est libre.
-- Forker le projet depuis github -> ChargeMap/android-test
 - Créer une pull request
 
 Contraintes :
